@@ -8,6 +8,7 @@ public class Block {
 	private String previousHash;
 	private String data; //our data is just a msg
 	private long timeStamp; //as number of milliseconds since 1/1/1970.
+	private int difficulty;
 	private int nonce;
 
 	//Block constructor
@@ -16,20 +17,24 @@ public class Block {
 		this.previousHash = prevHash;
 		this.timeStamp = new Date().getTime();
 		
+		//assigns random difficulty to a block [1-6]
+		this.difficulty = (int) (Math.random()*(6-1+1)+1); 
+		
 		this.hash = this.calculateHash();
+		this.mineBlock(this.difficulty);
 	}
 	
 	public String calculateHash() {
 		String hash = 
 				StringUtil.applySha256(this.previousHash+
-						this.data + this.timeStamp + this.nonce);
+						this.data + this.timeStamp + this.nonce + this.difficulty);//added the difficulty to the hash calc, will see how it behaves.
 		return hash;
 	}
 	
 	/*Takes in an int called difficulty, this is the number of 0’s they must solve for. 
 	 * Low difficulty like 1 or 2 can be solved nearly instantly on most computers, 
 	 * 4-6 would require a bit more computational power.*/
-	public void mineBlock(int difficulty) {
+	private void mineBlock(int difficulty) {
 		//Create a string of length: difficulty * "0"
 		String target = new String(new char[difficulty]).replace('\0', '0');
 		while(!this.hash.substring(0, difficulty).equals(target)) {
@@ -54,5 +59,8 @@ public class Block {
 	
 	public long getTimeStamp() {
 		return this.timeStamp;
+	}
+	public int getDifficulty() {
+		return this.difficulty;
 	}
 }

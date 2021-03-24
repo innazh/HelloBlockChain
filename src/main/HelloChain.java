@@ -17,21 +17,17 @@ public class HelloChain {
 		and break the chain.*/
 	
 	public static ArrayList<Block> blockchain = new ArrayList<Block>(); 
-	public static int difficulty = 6;//up to 6
 	
 	public static void main(String[] args) {
 		//first block = genesis block
-		blockchain.add(new Block("Hi im the first one to board the chain", "0"));
 		System.out.println("Trying to Mine block 1... ");
-		blockchain.get(0).mineBlock(difficulty);
+		blockchain.add(new Block("Hi im the first one to board the chain", "0"));
 		
-		blockchain.add(new Block("Yo im the second block", blockchain.get(blockchain.size()-1).getHash()));		
 		System.out.println("Trying to Mine block 2... ");
-		blockchain.get(1).mineBlock(difficulty);
+		blockchain.add(new Block("Yo im the second block", blockchain.get(blockchain.size()-1).getHash()));		
 		
-		blockchain.add(new Block("Hey im the third block", blockchain.get(blockchain.size()-1).getHash()));
 		System.out.println("Trying to Mine block 3... ");
-		blockchain.get(2).mineBlock(difficulty);	
+		blockchain.add(new Block("Hey im the third block", blockchain.get(blockchain.size()-1).getHash()));
 		
 		System.out.println("\nBlockchain is Valid: " + isChainValid());
 		
@@ -43,7 +39,6 @@ public class HelloChain {
 	public static Boolean isChainValid() {
 		Block currentBlock;
 		Block prevBlock;
-		String hashTarget = new String(new char[difficulty]).replace('\0','0');
 		
 		//loop through blockchain to check hashes
 		for (int i=1; i < blockchain.size(); i++) {
@@ -60,7 +55,8 @@ public class HelloChain {
 				return false;
 			}
 			//check for the proof of work
-			if(!currentBlock.getHash().substring(0, difficulty).equals(hashTarget)) {
+			String hashTarget = new String(new char[currentBlock.getDifficulty()]).replace('\0','0');
+			if(!currentBlock.getHash().substring(0, currentBlock.getDifficulty()).equals(hashTarget)) {
 				System.out.println("This block hasn't been mined");
 				return false;
 			}
